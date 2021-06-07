@@ -1,6 +1,6 @@
 # OBS-live-translation
 
-This is a method to add a live translation to your live stream in OBS.
+This is a method to add a live translation into your live stream in OBS.
 It uses the *webkitSpeechRecognition* provided by Chrome Browser to transform the input speech audio to text, then sending it to an API in Google Scripts to translate it and show the translation in your screen.
 As the Chrome's speech recognition detects when you finish your sentence, you will get a very good translation of the entire sentence, instead of chunks of non sense text.
 
