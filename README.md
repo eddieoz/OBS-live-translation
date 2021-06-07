@@ -4,6 +4,8 @@ This is a method to add a live translation into your live stream in OBS.
 It uses the *webkitSpeechRecognition* provided by Chrome Browser to transform the input speech audio to text, then sending it to an API in Google Scripts to translate it and show the translation in your screen.
 As the Chrome's speech recognition detects when you finish your sentence, you will get a very good translation of the entire sentence, instead of chunks of non sense text.
 
+## Demo: https://www.twitch.tv/videos/1046684749
+
 ## Pre-requisites
 - Google Chrome version 25 and later (https://developers.google.com/web/updates/2013/01/Voice-Driven-Web-Apps-Introduction-to-the-Web-Speech-API)
 - Google account to use https://script.google.com/ (free account)
