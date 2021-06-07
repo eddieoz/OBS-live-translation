@@ -45,5 +45,6 @@ Now you have the API for translation working on Google Scripts and your translat
 
 - On Mac, maybe it is needed to have your Chrome window in the same space (desktop) of OBS otherwise the window goes to a standby mode and stops translating.
 - Chrome's speech recognition needs a small pause between the sentences to detect and send the text to be translated. If the speaker don't do a pause, it will generate a big chunk of text delayed by some seconds.
+- It does not work on localhost, because Chrome needs https to work properly. That's why hosting the html on a https server is mandatory.
 
 This is a reconstruction of the method found on https://www.reddit.com/r/Twitch/comments/l9ako5/adding_live_subtitles_with_translation_to_your/. The original links were broken and the page was not available anymore.
