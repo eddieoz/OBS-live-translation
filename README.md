@@ -26,7 +26,7 @@ We will use IPFS to have a decentralised webpage.
 
 1) Upload this entire folder in https://pinata.cloud/
 2) Update the URL below with the address supplied by pinata.cloud, and update the 'deployment id' you saved before
-- https://gateway.pinata.cloud/ipfs/**'YOUR IPFS ADDRESS'**/translate.html?recog=en&trans=pt-BR&bgcolor=lightgreen&size=25&weight=900&color=white&st_color=block&st_width=2&v_align=bottom&gs_key=**'YOUR DEPLOYMENT ID'**
+- https://gateway.pinata.cloud/ipfs/"YOUR IPFS ADDRESS"/translate.html?recog=en&trans=pt-BR&bgcolor=lightgreen&size=25&weight=900&color=white&st_color=block&st_width=2&v_align=bottom&gs_key="YOUR DEPLOYMENT ID"
 3) Open the address above on Chrome 
 4) Enable your input source (microphone or other)
 - on a Mac I'm redirecting the desktop audio as an input through BlockHole Audio Driver to be able to auto-translate online web-conferences in my stream.
