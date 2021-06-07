@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<!-- Based on https://sayonari.coresv.com/ninshikiChan/text.html -->
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c&display=swap" rel="stylesheet">
+
+    <title>Live Translation</title>
+
+    <style type="text/css">
+        /* cousine-regular - latin */
+        @font-face {
+            font-family: 'Cousine';
+            font-style: normal;
+            font-weight: 400;
+            src: url('./fonts/cousine-v17-latin-regular.eot');
+            /* IE9 Compat Modes */
+            src: local(''),
+                url('./fonts/cousine-v17-latin-regular.eot?#iefix') format('embedded-opentype'),
+                /* IE6-IE8 */
+                url('./fonts/cousine-v17-latin-regular.woff2') format('woff2'),
+                /* Super Modern Browsers */
+                url('./fonts/cousine-v17-latin-regular.woff') format('woff'),
+                /* Modern Browsers */
+                url('./fonts/cousine-v17-latin-regular.ttf') format('truetype'),
+                /* Safari, Android, iOS */
+                url('./fonts/cousine-v17-latin-regular.svg#Cousine') format('svg');
+            /* Legacy iOS */
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            /* font-family : inherit; */
+            /* font-size   : 300%; */
+            /* color  : black; */
+            font-weight: 0;
+            text-align: center;
+            /* left, center, right */
+            vertical-align: top;
+            /* top, middle, bottom */
+            -webkit-text-stroke-color: rgb(21, 0, 141);
+            -webkit-text-stroke-width: 0px;
+        }
+
+        html {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            font-family: 'Cousine', sans-serif;
+        }
+
+        table {
+            width: 100%;
+            /* table-layout: fixed; */
+        }
+
+        table.btm_table {
+            position: absolute;
+            /* bottom:0; */
+        }
+
+        table td {
+            /*word-break: break-all;*/
+            overflow-wrap: break-word;
+        }
+    </style>
+
+    <style>
+        /* prepare the selectors to add a stroke to */
+
+        .stroke-single-imb {
+            /* position: absolute; */
+            left: 0;
+            right: 0;
+            margin: 0;
+            /* -webkit-text-stroke: 0px #0000FF;  */
+        }
+
+        .stroke-single-bg {
+            position: absolute;
+            left: 0;
+            right: 0;
+            margin: auto;
+            /* -webkit-text-stroke: 3px #FF0000;  */
+        }
+
+        /* add a single stroke */
+        .stroke-single-fg {
+            position: absolute;
+            left: 0;
+            right: 0;
+            margin: auto;
+            /* -webkit-text-stroke: 0px #FFFFFF; */
+        }
+    </style>
+
+    <script>
+        var flag_speech = 0;
+
+        // Speech recognition starts when window is loaded --------------
+        window.onload = function () {
+            vr_function();
+        }
+
+
+        // Function for getting URL parameters ---------------------------
+        function getParam(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+        function vr_function() {
+            window.SpeechRecognition = window.SpeechRecognition || webkitSpeechRecognition;
+
+            // Settings for voice recognition ----------------------
+            var recognition = new webkitSpeechRecognition();
+            recognition.lang = 'en';
+            recognition.interimResults = true;
+            recognition.continuous = true;
+            var recog_text = '';
+            var trans_text = '';
+
+            // Translation settings ---------------------------
+            var trans_sourcelang = 'en';
+            var trans_destlang = 'pt-BR';
+
+            var gs_key = getParam('gs_key');
+
+            var TRANS_URL = 'https://script.google.com/macros/s/' + gs_key + '/exec';
+            var query = ''
+
+            ///////////////////////////////////////////////////////////
+            // Events ---------------------------------
+            recognition.onsoundstart = function () {
+                // document.getElementById('status').innerHTML = "Listening";
+            };
+            recognition.onspeechstart = function () {
+                // document.getElementById('status').innerHTML = "Listening";
+            };
+            recognition.onnomatch = function () {
+                // document.getElementById('status').innerHTML = "Please try again";
+            };
+            recognition.onerror = function () {
+                // document.getElementById('status').innerHTML = "Error";
+                vr_function();
+            };
+            recognition.onsoundend = function () {
+                // document.getElementById('status').innerHTML = "Stopping";
+                recognition.stop()
+                vr_function();
+            };
+            recognition.onspeechend = function () {
+                // document.getElementById('status').innerHTML = "Stopping";
+                recognition.stop()
+                vr_function();
+            };
+
+            //////////////////////////////////////////////////////////
+            // URL parameters -------------------
+            arg_recog = getParam('recog');
+            arg_trans = getParam('trans');
+
+            // Language setting ----------------------------
+            if (arg_recog != null) {
+                recognition.lang = arg_recog;
+                trans_sourcelang = recognition.lang;
+            }
+            if (arg_trans != null) {
+                trans_destlang = arg_trans;
+            }
+
+            if (trans_sourcelang == trans_destlang) {
+                alert("ERROR! Please set different language between recog and trans!\nYou set both [" + trans_sourcelang + "]!");
+            }
+
+            /////////////////////////////////////////////////////////
+            // API settings ---------------------------
+            var request = new XMLHttpRequest();
+
+            // When the recognition result is returned ------------------
+            recognition.onresult = function (event) {
+                var results = event.results;
+                for (var i = event.resultIndex; i < results.length; i++) {
+                    if (results[i].isFinal) {
+                        // console.log(results);
+                        recog_text = results[i][0].transcript;
+
+                        // document.getElementById('speech_text-imb').innerHTML = recog_text;
+                        // document.getElementById('speech_text-bg').innerHTML = recog_text;
+                        // document.getElementById('speech_text-fg').innerHTML = recog_text;
+
+                        if (gs_key != null) {
+                            query = TRANS_URL + '?text=' + recog_text + '&source=' + trans_sourcelang + '&target=' + trans_destlang;
+                            request.open('GET', query, true);
+
+                            request.onreadystatechange = function () {
+                                if (request.readyState === 4 && request.status === 200) {
+                                    // document.getElementById('speech_text-imb').innerHTML = recog_text;
+                                    // document.getElementById('speech_text-bg').innerHTML = recog_text;
+                                    // document.getElementById('speech_text-fg').innerHTML = recog_text;
+                                    document.getElementById('trans_text-imb').innerHTML = request.responseText;
+                                    document.getElementById('trans_text-bg').innerHTML = request.responseText;
+                                    document.getElementById('trans_text-fg').innerHTML = request.responseText;
+                                }
+                                vr_function();
+                            }
+                            request.send(null);
+                        } else {
+                            document.getElementById('speech_text-imb').innerHTML = recog_text;
+                            document.getElementById('speech_text-bg').innerHTML = recog_text;
+                            document.getElementById('speech_text-fg').innerHTML = recog_text;
+                            vr_function();
+                        }
+                    }
+                    else {
+                        document.getElementById('speech_text-imb').innerHTML = "<< " + results[i][0].transcript + " >>";
+                        document.getElementById('speech_text-bg').innerHTML = "<< " + results[i][0].transcript + " >>";
+                        document.getElementById('speech_text-fg').innerHTML = "<< " + results[i][0].transcript + " >>";
+                        flag_speech = 1;
+                    }
+                }
+            }
+            flag_speech = 0;
+            recognition.start();
+        }
+    </script>
+</head>
+
+
+
+
+
+
+<body>
+    <div class="big" id="result_text">
+        <table id="text_table" class="btm_table">
+            <tr>
+                <td id="tbl_td" align="center" valign='bottom'>
+                    <div class="stroke-single-bg" id="speech_text-bg">
+                        [ TRANSLATING HERE ]
+                    </div>
+                    <div class="stroke-single-fg" id="speech_text-fg">
+                        [ TRANSLATING HERE ]
+                    </div>
+                    <div class="stroke-single-imb" id="speech_text-imb">
+                        [ TRANSLATING HERE ]
+                    </div>
+
+                    <div class="stroke-single-bg" id="trans_text-bg">
+
+                    </div>
+                    <div class="stroke-single-fg" id="trans_text-fg">
+
+                    </div>
+                    <div class="stroke-single-imb" id="trans_text-imb">
+
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+<!-- ############## Last script ############## -->
+<script type="text/javascript">
+
+    // Change display style ---------------------------------
+    if (getParam('bgcolor') != null) {
+        document.bgColor = getParam('bgcolor');
+    }
+
+    if (getParam('v_align') == "top") {
+        document.getElementById("text_table").style.bottom = -1;
+    } else if (getParam('v_align') == "bottom") {
+        document.getElementById("text_table").style.bottom = 0;
+    }
+
+    // Adjust the background color
+    if (getParam('bgcolor') != null) {
+        document.getElementById("speech_text-imb").style.webkitTextStrokeColor = getParam('bgcolor');
+    }
+
+    if (getParam('st_width') != null) {
+        document.getElementById("speech_text-imb").style.webkitTextStrokeWidth = getParam('st_width') + 'pt';
+    }
+
+
+    if (getParam('bgcolor') != null) {
+        document.getElementById("trans_text-imb").style.webkitTextStrokeColor = getParam('bgcolor');
+    }
+
+    if (getParam('st_width') != null) {
+        document.getElementById("trans_text-imb").style.webkitTextStrokeWidth = getParam('st_width') + 'pt';
+    }
+
+
+    // Speech recognition result text
+    if (getParam('font') != null) {
+        document.getElementById("result_text").style.fontFamily = "'" + getParam('font') + "'";
+    }
+
+    if (getParam('size') != null) {
+        document.getElementById("result_text").style.fontSize = getParam('size') + 'pt';
+    }
+
+    if (getParam('color') != null) {
+        document.getElementById("speech_text-fg").style.color = getParam('color');
+    }
+
+    if (getParam('st_color') != null) {
+        document.getElementById("speech_text-bg").style.webkitTextStrokeColor = getParam('st_color');
+    }
+
+    if (getParam('weight') != null) {
+        document.getElementById("result_text").style.fontWeight = getParam('weight');
+    }
+
+    if (getParam('st_width') != null) {
+        document.getElementById("speech_text-bg").style.webkitTextStrokeWidth = getParam('st_width') + 'pt';
+    }
+
+
+    // Translation result text
+    if (getParam('color') != null) {
+        document.getElementById("trans_text-fg").style.color = getParam('color');
+    }
+
+    if (getParam('st_color') != null) {
+        document.getElementById("trans_text-bg").style.webkitTextStrokeColor = getParam('st_color');
+    }
+
+    if (getParam('st_width') != null) {
+        document.getElementById("trans_text-bg").style.webkitTextStrokeWidth = getParam('st_width') + 'pt';
+    }
+
+    function getParam(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+</script>
+
+</html>
