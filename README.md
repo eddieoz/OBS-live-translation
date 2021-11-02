@@ -33,6 +33,10 @@ We will use IPFS to have a decentralised webpage.
 4) Enable your input source (microphone or other)
 - on a Mac I'm redirecting the desktop audio as an input through BlockHole Audio Driver to be able to auto-translate online web-conferences in my stream.
 
+You can change the source and destination languages, changing the *recog* and *trans* parameters of the URL above. In the example I used *recog=en&trans=pt-BR* for translating from English (en) to Brazilian Portuguese (pt-BR).
+
+You can find a list of some useful ISO language codes (locale) here: https://gist.github.com/eddieoz/63d839c8a20ef508cfa4fa9562632a21
+
 ## Phase 3: Create an overlay on OBS
 
 Now you have the API for translation working on Google Scripts and your translation window working on Chrome
